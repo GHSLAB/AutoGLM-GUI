@@ -191,6 +191,7 @@ class AsyncGLMAgent(AsyncAgentBase, AsyncAgent):
                 "success": result.success,
                 "finished": finished,
                 "message": result.message or action.get("message"),
+                "screenshot": screenshot.base64_data if screenshot else None,
             },
         }
 
