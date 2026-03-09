@@ -5,10 +5,10 @@ from __future__ import annotations
 import asyncio
 import threading
 import time
+from collections.abc import Awaitable, Callable
 from contextlib import contextmanager
 from dataclasses import dataclass
 from enum import StrEnum
-from collections.abc import Awaitable, Callable
 
 from AutoGLM_GUI.agents.protocols import AsyncAgent, BaseAgent
 from AutoGLM_GUI.config import AgentConfig, ModelConfig
@@ -346,7 +346,8 @@ class PhoneAgentManager:
         self,
         device_id: str,
         auto_initialize: bool = False,
-        **kwargs,
+        timeout: float | None = None,
+        raise_on_timeout: bool = True,
     ) -> bool:
         """
         Atomically transition device state from IDLE to BUSY.
@@ -360,13 +361,14 @@ class PhoneAgentManager:
         Args:
             device_id: Device identifier
             auto_initialize: Auto-initialize agent if not already initialized
+            timeout: Ignored (kept for backward compatibility). The operation
+                is non-blocking and completes instantly.
             raise_on_timeout: If True (default), raise DeviceBusyError when
-                device is BUSY; if False, return False instead.
-            **kwargs: Accepted for backward compatibility (``timeout``).
+                device is BUSY. If False, return False instead.
 
         Returns:
-            bool: True if state was IDLE and is now BUSY; False if device is
-                BUSY and raise_on_timeout=False.
+            bool: True if state was IDLE and is now BUSY, False if device is
+                BUSY and raise_on_timeout=False
 
         Raises:
             DeviceBusyError: If device is already BUSY and raise_on_timeout=True
